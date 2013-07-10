@@ -15,24 +15,36 @@
 */
 var jsonp = (function () {
   var win = this, doc = win.document
-    , defaultCallbackName = "c";
+    , defaultCallbackName = "c"
+    , Nonce = (function () {
+      var tokenAttr = "data-nonce";
+      return {
+        "set": function (script) {
+          var token = ["jsonpId", +new Date, Math.floor(Math.random()*100000)].join("_");
+          script.setAttribute(tokenAttr, token);
+          return token;
+        }
+        , "get": function (script) {
+          return script.getAttribute(tokenAttr);
+        }
+      };
+    })();
   function cleanup() {
     var script = this
-      , nonce = script.getAttribute("data-nonce");
+      , nonce = Nonce.get(script);
     script.parentNode.removeChild(script);
     delete win[nonce];
   }
   return function (url, handler, name) {
     arguments.length > 2 || (name = defaultCallbackName);
     var link = doc.createElement("a")
-      , nonce = ["jsonpId", +new Date, Math.floor(Math.random()*100000)].join("_")
-      , script = doc.createElement("script");
+      , script = doc.createElement("script")
+      , nonce = Nonce.set(script);
     window[nonce] = handler;
-    script.setAttribute("data-nonce", nonce);
     link.href = url;
     url += [(link.search ? "&" : "?"), name, "=", nonce].join("");
     script.src = url;
-    script.onload = cleanup;
+    script.onload = script.onerror = cleanup;
     (doc.getElementsByTagName("head")[0] || doc.body).appendChild(script);
   };
 })();
