@@ -48,3 +48,14 @@ var jsonp;
     (doc.getElementsByTagName("head")[0] || doc.body).appendChild(script);
   };
 })());
+
+var module, require, exports;
+(function () {
+  var toExport = {"jsonp": jsonp};
+  (function() {
+    var ctx = this, undefinedType = "undefined";
+    if (undefinedType!=typeof module && undefinedType!=typeof module.exports && "function"==typeof require) {
+      for (var name in ctx) {exports[name] = ctx[name];}
+    }
+  }.call(toExport));
+})();

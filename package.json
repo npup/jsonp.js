@@ -1,0 +1,11 @@
+{
+  "name": "jsonp.js",
+  "description": "function for jsonp calls",
+  "version": "0.1.1",
+  "private": true,
+  "dependencies": {
+    "buster": "0.7.*"
+    , "eslint": "0.5.*"
+    , "uglify-js": "2.4.*"
+  }
+}
